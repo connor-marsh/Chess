@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Chess</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <canvas id="myCanvas" width="500" height="500"></canvas>
+    <!--<h5>Currently Developing so if the program doesn't work that might be why</h1>-->
+    <a href="instructions.html">How to play chess</a>
+    <h1 id="turn">White's Turn</h1>
+    <h3 id="thinking"></h3>
+    <h3 id="gameState"></h3>
+    <p id="sp" class="debug"> | </p>
+    <p id="coords" class="debug"> | </p>
+    <p id="dead"></p>
+    <button type="button" onclick="reset()">Reset Game</button>
+    <p>Players:</p>
+    <input id="players" type="number" min="1" max="2" value="1" step="1">
+    <p>Difficulty:</p>
+    <input id="difficulty" type="number" min="0" max="6" value="3" step="1">
+    <button type="button" onclick="board.undoBoard()">Undo Move</button>
+    <!--<button type="button" onclick="board.undoMove()">Undo Actual Move</button>-->
+    
+    <script src="board.js"></script>
+    <script src="piece.js"></script>
+    <script src="minimax.js"></script>
+    <script src="script.js"></script>
+    <script src="mouse.js"></script>
+  </body>
+</html>
