@@ -41,11 +41,13 @@ function ai() {
   }
   else {
     var history = board.moveHistory;
-    board.boardHistory.push(board.copy());
     var boardHistory = board.boardHistory;
+
     board = minimax(board.copy(), difficulty, true, -Infinity, Infinity);
     board.moveHistory = history;
+    var fakeBoard = board.copy();
     board.boardHistory = boardHistory;
+    board.boardHistory.push(fakeBoard);
     board.moveHistory.push(board.prevMove);
     board.turn = true;
   }

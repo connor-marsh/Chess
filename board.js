@@ -109,6 +109,11 @@ class Board {
     if (real) {
       var x = Math.floor(mx / this.tileSpace);
       var y = Math.floor(my / this.tileSpace);
+
+      if (this.boardHistory.length == 1) {
+        this.boardHistory = [this.copy()];
+      }
+
     }
     else {
       var x = mx;
@@ -118,9 +123,7 @@ class Board {
     var holdingDead = JSON.parse(JSON.stringify(this.deadPieces));
     var pieceHolder = this.tiles[this.sp[0]][this.sp[1]];
     if (this.tiles[this.sp[0]][this.sp[1]].canDoMove(x, y, this, real)) {
-      if (real) {
-        this.boardHistory.push(this.copy());
-      }
+      
       this.tiles[this.sp[0]][this.sp[1]].makeMove(x, y, this);
 
 
@@ -171,6 +174,10 @@ class Board {
 
       this.moveHistory.push(this.prevMove);
 
+      if (real) {
+        this.boardHistory.push(this.copy());
+      }
+
     }
 
     this.sp = [-1, -1];
@@ -180,10 +187,12 @@ class Board {
   }
 
   undoBoard() {
-
+    
     if (this.boardHistory.length == 1) return;
 
-    var board = this.boardHistory.pop();
+    this.boardHistory.pop();
+
+    var board = this.boardHistory[this.boardHistory.length-1];
     this.moveHistory = board.moveHistory;
     this.prevMove = board.prevMove;
     this.tiles = board.tiles;
@@ -192,7 +201,7 @@ class Board {
     this.blackPieces = board.blackPieces;
     this.whiteKing = board.whiteKing;
     this.blackKing = board.blackKing;
-    this.turn = board.turn;
+    this.turn = !this.turn;
 
     document.getElementById("turn").innerHTML = ((this.turn) ? "White's " : "Black's ") + "Turn";
     if (this.isInCheck()) {
@@ -200,6 +209,10 @@ class Board {
     }
     this.getPossibleMoves((this.turn) ? "white" : "black", true);
     this.render();
+
+    console.log("undone");
+    console.log("Board History length is now: " + this.boardHistory.length);
+    
   }
 
   // This function is irrelevant because the other one is objectively better
