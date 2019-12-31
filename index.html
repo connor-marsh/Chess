@@ -21,7 +21,7 @@
     <input id="players" type="number" min="1" max="2" value="1" step="1">
     <p>Difficulty:</p>
     <input id="difficulty" type="number" min="0" max="6" value="3" step="1">
-    <button type="button" onclick="board.undoBoard()">Undo Move</button>
+    <button type="button" onclick="board.undoBoard();if(players==1){board.undoBoard();}">Undo Move</button>
     <!--<button type="button" onclick="board.undoMove()">Undo Actual Move</button>-->
     
     <script src="board.js"></script>

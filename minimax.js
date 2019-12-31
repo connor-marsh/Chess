@@ -79,7 +79,10 @@ function ai() {
 function minimax(boardState, layers, maxing, alpha, beta) {
   boardState.turn = !maxing;
 
-  var moves = boardState.copy().getPossibleMoves((maxing) ? "black" : "white", true);
+  // This prevents the AI from opting to king trade
+  var inCheckToStartWith = boardState.isInCheck();
+
+  var moves = boardState.copy().getPossibleMoves((maxing) ? "black" : "white", inCheckToStartWith);
   if (moves.length == 0) {
     if (boardState.isInCheck()) {
       return (100000 * ((maxing) ? -1 : 1));
@@ -105,8 +108,8 @@ function minimax(boardState, layers, maxing, alpha, beta) {
       // ****** Code for if you return board state *****
       // console.log("new layer");
       var stateHolder = minimax(clone.copy(), layers - 1, !maxing, alpha, beta);
-      if (typeof (stateHolder) == 'object') {
-        var chosenState = stateHolder.copy().evaluateState((maxing)?"black":"white");
+      if (typeof(stateHolder) == 'object') {
+        var chosenState = stateHolder.copy().evaluateState();
       }
       else {
         var chosenState = stateHolder;
@@ -118,7 +121,7 @@ function minimax(boardState, layers, maxing, alpha, beta) {
       clone.turn = !maxing;
     }
     else {
-      var chosenState = clone.evaluateState((maxing)?"black":"white");
+      var chosenState = clone.evaluateState();
     }
     chosenState += (Math.random()/20 - 0.01);
     //console.log(chosenState + " On layer " + layers);

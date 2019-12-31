@@ -105,7 +105,7 @@ class Board {
   }
   // Real defaults to true
   swapPieces(mx, my, real) {
-    if (typeof (real) == 'undefined') real = true;
+    if (typeof(real) == 'undefined') real = true;
     if (real) {
       var x = Math.floor(mx / this.tileSpace);
       var y = Math.floor(my / this.tileSpace);
@@ -118,7 +118,9 @@ class Board {
     var holdingDead = JSON.parse(JSON.stringify(this.deadPieces));
     var pieceHolder = this.tiles[this.sp[0]][this.sp[1]];
     if (this.tiles[this.sp[0]][this.sp[1]].canDoMove(x, y, this, real)) {
-      this.boardHistory.push(this.copy());
+      if (real) {
+        this.boardHistory.push(this.copy());
+      }
       this.tiles[this.sp[0]][this.sp[1]].makeMove(x, y, this);
 
 
@@ -169,12 +171,7 @@ class Board {
 
       this.moveHistory.push(this.prevMove);
 
-
-
     }
-
-
-
 
     this.sp = [-1, -1];
 
@@ -183,9 +180,9 @@ class Board {
   }
 
   undoBoard() {
-    
+
     if (this.boardHistory.length == 1) return;
-    
+
     var board = this.boardHistory.pop();
     this.moveHistory = board.moveHistory;
     this.prevMove = board.prevMove;
@@ -201,73 +198,75 @@ class Board {
     if (this.isInCheck()) {
       document.getElementById("turn").innerHTML += " (Check!)";
     }
-    this.getPossibleMoves((this.turn)?"white":"black", true);
+    this.getPossibleMoves((this.turn) ? "white" : "black", true);
     this.render();
   }
 
-  undoMove() {
+  // This function is irrelevant because the other one is objectively better
 
-    if (this.moveHistory.length == 0) return;
+  // undoMove() {
 
-    if (this.winner == "none") {
+  //   if (this.moveHistory.length == 0) return;
 
-      var hold1 = this.tiles[this.prevMove[0]][this.prevMove[1]];
-      var hold2 = this.tiles[this.prevMove[2]][this.prevMove[3]];
-      this.tiles[this.prevMove[0]][this.prevMove[1]] = hold2;
+  //   if (this.winner == "none") {
 
-      if (this.prevMove[4] != null) {
-        this.tiles[this.prevMove[4].x][this.prevMove[4].y] = this.prevMove[4].copy();
-        this.deadPieces.pop();
-        if (!(this.prevMove[4].x == this.prevMove[2] && this.prevMove[4].y == this.prevMove[3])) {
-          this.tiles[this.prevMove[2]][this.prevMove[3]] = hold1;
-        }
-      }
-      else {
-        this.tiles[this.prevMove[2]][this.prevMove[3]] = hold1;
-      }
+  //     var hold1 = this.tiles[this.prevMove[0]][this.prevMove[1]];
+  //     var hold2 = this.tiles[this.prevMove[2]][this.prevMove[3]];
+  //     this.tiles[this.prevMove[0]][this.prevMove[1]] = hold2;
+
+  //     if (this.prevMove[4] != null) {
+  //       this.tiles[this.prevMove[4].x][this.prevMove[4].y] = this.prevMove[4].copy();
+  //       this.deadPieces.pop();
+  //       if (!(this.prevMove[4].x == this.prevMove[2] && this.prevMove[4].y == this.prevMove[3])) {
+  //         this.tiles[this.prevMove[2]][this.prevMove[3]] = hold1;
+  //       }
+  //     }
+  //     else {
+  //       this.tiles[this.prevMove[2]][this.prevMove[3]] = hold1;
+  //     }
 
 
-      // Set back the x and y coords
-      this.tiles[this.prevMove[0]][this.prevMove[1]].x = this.prevMove[0];
-      this.tiles[this.prevMove[0]][this.prevMove[1]].y = this.prevMove[1];
-      // Set back king and rook has moved
-      if ((this.tiles[this.prevMove[0]][this.prevMove[1]].name == "rook" || this.tiles[this.prevMove[0]][this.prevMove[1]].name == "king") && this.prevMove[6]) {
-        this.tiles[this.prevMove[0]][this.prevMove[1]].hasMoved = false;
-      }
-      // Set back pawn first
-      if (this.tiles[this.prevMove[0]][this.prevMove[1]].name == "pawn" && this.prevMove[6]) {
-        this.tiles[this.prevMove[0]][this.prevMove[1]].first = true;
-      }
+  //     // Set back the x and y coords
+  //     this.tiles[this.prevMove[0]][this.prevMove[1]].x = this.prevMove[0];
+  //     this.tiles[this.prevMove[0]][this.prevMove[1]].y = this.prevMove[1];
+  //     // Set back king and rook has moved
+  //     if ((this.tiles[this.prevMove[0]][this.prevMove[1]].name == "rook" || this.tiles[this.prevMove[0]][this.prevMove[1]].name == "king") && this.prevMove[6]) {
+  //       this.tiles[this.prevMove[0]][this.prevMove[1]].hasMoved = false;
+  //     }
+  //     // Set back pawn first
+  //     if (this.tiles[this.prevMove[0]][this.prevMove[1]].name == "pawn" && this.prevMove[6]) {
+  //       this.tiles[this.prevMove[0]][this.prevMove[1]].first = true;
+  //     }
 
-      // Move rook for castle
-      if (this.tiles[this.prevMove[0]][this.prevMove[1]].name == "king" && Math.abs(this.prevMove[0] - this.prevMove[2]) > 1) {
+  //     // Move rook for castle
+  //     if (this.tiles[this.prevMove[0]][this.prevMove[1]].name == "king" && Math.abs(this.prevMove[0] - this.prevMove[2]) > 1) {
 
-        this.tiles[(this.prevMove[0] < this.prevMove[1]) ? 6 : 4][this.prevMove[1]].x = (this.prevMove[0] < this.prevMove[1]) ? 7 : 0;
+  //       this.tiles[(this.prevMove[0] < this.prevMove[1]) ? 6 : 4][this.prevMove[1]].x = (this.prevMove[0] < this.prevMove[1]) ? 7 : 0;
 
-      }
+  //     }
 
-      this.turn = !this.turn;
-      this.tiles[this.prevMove[0]][this.prevMove[1]].getPossibleMoves(this);
-      this.turn = !this.turn;
+  //     this.turn = !this.turn;
+  //     this.tiles[this.prevMove[0]][this.prevMove[1]].getPossibleMoves(this);
+  //     this.turn = !this.turn;
 
-      this.moveHistory.pop();
-      this.prevMove = this.moveHistory[this.moveHistory.length - 1];
-      if (this.prevMove == undefined) this.prevMove = [];
+  //     this.moveHistory.pop();
+  //     this.prevMove = this.moveHistory[this.moveHistory.length - 1];
+  //     if (this.prevMove == undefined) this.prevMove = [];
 
-      this.turn = !this.turn;
-      document.getElementById("turn").innerHTML = ((this.turn) ? "White's " : "Black's ") + "Turn";
-      if (this.prevMove[5]) {
-        document.getElementById("turn").innerHTML += " (Check!)";
-      }
+  //     this.turn = !this.turn;
+  //     document.getElementById("turn").innerHTML = ((this.turn) ? "White's " : "Black's ") + "Turn";
+  //     if (this.prevMove[5]) {
+  //       document.getElementById("turn").innerHTML += " (Check!)";
+  //     }
 
-      this.render();
+  //     this.render();
 
-    }
+  //   }
 
-  }
+  // }
 
   checkThreeFold() {
-    console.log(this.boardHistory.length);
+    //console.log(this.boardHistory.length);
   }
 
   canDoMove(x1, y1, x2, y2, real) {
@@ -366,10 +365,16 @@ class Board {
 
   isInCheck(side) {
 
-    if (typeof (side) == 'string')
-      var king = ((side == "white") ? this.whiteKing : this.blackKing).copy();
-    else
-      var king = ((this.turn) ? this.whiteKing : this.blackKing).copy();
+
+    if (typeof (side) == 'string') {
+      var king = ((side == "white") ? this.whiteKing : this.blackKing);
+    }
+    else {
+      var king = ((this.turn) ? this.whiteKing : this.blackKing);
+    }
+    if (typeof(king) == "undefined") {
+      return true;
+    }
 
     var moves = this.getPossibleMoves(((this.turn) ? "black" : "white"), false);
 
