@@ -45,8 +45,9 @@ class Piece {
       return false;
     }
     else {
-      // testing so its on false, should be on real
+
       if (real) {
+
         var clone = owner.copy();
         clone.sp = [this.x, this.y];
         clone.swapPieces(x, y, false);
@@ -702,8 +703,9 @@ class Pawn extends Piece {
       }
 
       if (y == 0) {
+        var piecesIndex = owner.whitePieces.indexOf(this);
         owner.tiles[this.x][this.y] = new Queen(this.color, x, y);
-        owner.whitePieces[owner.whitePieces.indexOf(this)] = owner.tiles[this.x][this.y];
+        owner.whitePieces[piecesIndex] = owner.tiles[this.x][this.y];
       }
       this.x = x;
       this.y = y;
@@ -728,8 +730,9 @@ class Pawn extends Piece {
         owner.tiles[x][y - 1] = new Blank();
       }
       if (y == 7) {
+        var piecesIndex = owner.blackPieces.indexOf(this);
         owner.tiles[this.x][this.y] = new Queen(this.color, x, y);
-        owner.blackPieces[owner.whitePieces.indexOf(this)] = owner.tiles[this.x][this.y];
+        owner.blackPieces[piecesIndex] = owner.tiles[this.x][this.y];
       }
       this.x = x;
       this.y = y;
